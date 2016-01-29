@@ -30,9 +30,12 @@ public class CustomerServiceTest {
     @Autowired
     private CustomerService customerService;
 
+    private Customer lastCreated;
+
     @Before
     public void setUp() throws Exception {
-
+        Customer customer = new Customer(null, "강", "뷰티");
+        this.lastCreated = customerService.create(customer);
     }
 
     @After
@@ -47,8 +50,29 @@ public class CustomerServiceTest {
     @Test
     public void testCustomerCreate() {
         // OUTPUT : 어떤 데이터가 나와야 할까?
-        Customer customer = new Customer(null, "강", "뷰티");
-        Customer created = customerService.create(customer);
-        assertEquals(new Customer(1L, "강", "뷰티"), created);
+        Customer createdCustomer =
+                customerService.create(new Customer(null, "승", "발대"));
+        assertEquals(new Customer(createdCustomer.getId(), "승", "발대"),
+                createdCustomer);
     }
+
+    /**
+     * 고객조회(Select) Service 만들기
+     * 예 : USP_Super_Customer_S01
+     */
+    @Test
+    public void testCustomerRead() {
+        // OUTPUT : Customer
+        Long id = this.lastCreated.getId();
+        Customer readed = customerService.read(id);
+        assertEquals(new Customer(id, "강", "뷰티" ), readed);
+    }
+
+    @Test
+    public void testCustomerUpdate() {
+
+    }
+
+    @Test
+    public void testA() { }
 }
