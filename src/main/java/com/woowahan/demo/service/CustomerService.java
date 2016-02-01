@@ -29,4 +29,16 @@ public class CustomerService {
         Customer readed = customerRepository.findOne(id);
         return readed;
     }
+
+    /**
+     * @Transactional = 메소드 단위의 BEGIN ~ COMMIT
+     */
+    @Transactional
+    public Customer updateAll(long id, String fname, String lname) {
+        Customer updateCustomer = customerRepository.findOne(id);
+        updateCustomer.setFirstName(fname);
+        updateCustomer.setLastName(lname);
+
+        return updateCustomer;
+    }
 }
