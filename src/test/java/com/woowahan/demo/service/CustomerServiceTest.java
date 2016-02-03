@@ -68,9 +68,14 @@ public class CustomerServiceTest {
         assertEquals(new Customer(id, "강", "뷰티" ), readed);
     }
 
+    /**
+     * 고객수정(Update) Service 만들기
+     * 예 : USP_Super_Customer_M02
+     */
     @Test
     public void testCustomerUpdate() {
-
+        Customer updated = customerService.updateAll(1L, "민", "경수");
+        assertEquals(new Customer(1L, "민", "경수"), updated);
     }
 
     @Test
