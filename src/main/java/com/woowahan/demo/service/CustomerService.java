@@ -3,7 +3,9 @@ package com.woowahan.demo.service;
 import com.woowahan.demo.domain.Customer;
 import com.woowahan.demo.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.transaction.Transactional;
 
@@ -40,5 +42,37 @@ public class CustomerService {
         updateCustomer.setLastName(lname);
 
         return updateCustomer;
+    }
+
+    /**
+     * @Transactional = 메소드 단위의 BEGIN ~ COMMIT
+     */
+    @Transactional
+    public Boolean delete(long id) {
+        try{
+            customerRepository.delete(id);
+        }catch(EmptyResultDataAccessException e) {
+            TransactionAspectSupport.currentTransactionStatus()
+                    .setRollbackOnly();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @Transactional = 메소드 단위의 BEGIN ~ COMMIT
+     * delete시  delete, delete2중  delete2 방법으로
+     */
+    @Transactional
+    public boolean delete2(Long id) {
+        Customer readed = this.read(id);
+        boolean result;
+        if(readed == null) {
+            result = false;
+        } else {
+            customerRepository.delete(readed);
+            result = true;
+        }
+        return result;
     }
 }
