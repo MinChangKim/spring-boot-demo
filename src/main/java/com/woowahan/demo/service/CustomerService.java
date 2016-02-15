@@ -10,7 +10,9 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import javax.transaction.Transactional;
 
 /**
- * Created by sykim on 2016. 1. 26..
+ * @Service
+ * 서비스 클래스를 나타내는 애너테이션입니다. 기능 면에서는 @Component와 다르지 않습니다.
+ * 서비스 클래스는 Repository가 올바르게 동작한다는 전제하에 구현하도록 합니다.
  */
 @Service
 public class CustomerService {
@@ -28,8 +30,7 @@ public class CustomerService {
     }
 
     public Customer read(long id) {
-        Customer readed = customerRepository.findOne(id);
-        return readed;
+        return customerRepository.findOne(id);
     }
 
     /**
@@ -40,7 +41,6 @@ public class CustomerService {
         Customer updateCustomer = customerRepository.findOne(id);
         updateCustomer.setFirstName(fname);
         updateCustomer.setLastName(lname);
-
         return updateCustomer;
     }
 
@@ -65,7 +65,7 @@ public class CustomerService {
      */
     @Transactional
     public boolean delete2(Long id) {
-        Customer readed = this.read(id);
+        Customer readed = customerRepository.findOne(id);
         boolean result;
         if(readed == null) {
             result = false;

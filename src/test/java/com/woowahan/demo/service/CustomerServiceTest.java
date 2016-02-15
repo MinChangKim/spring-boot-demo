@@ -18,11 +18,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 
 /**
- * Created by sykim on 2016. 1. 26..
- * TODO : 고객생성(Create) Service 만들기
- * TODO : 고객조회
- * TODO : 고객수정
- * TODO : 고객삭제
+ * DONE : 고객생성(Create) Service 만들기
+ * DONE : 고객조회(Read)
+ * DONE : 고객수정(Update)
+ * DONE : 고객삭제(Delete)
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SpringBootDemoApplication.class)
@@ -87,15 +86,10 @@ public class CustomerServiceTest {
     @Test
     public void testCustomerDelete() {
         Long id = this.lastCreated.getId();
-        Boolean deleted = customerService.delete(id);
-        assertTrue(deleted);
-
+        assertTrue(customerService.delete(id));
         assertFalse(customerService.delete(id));
         assertFalse(customerService.delete2(id));
     }
-
-
-
 
     @Test
     public void testA() { }
