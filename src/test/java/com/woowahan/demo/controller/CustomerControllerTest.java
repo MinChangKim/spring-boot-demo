@@ -144,7 +144,7 @@ public class CustomerControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonCustomer = objectMapper.writeValueAsString(updatedCustomer);
 
-        mockMvc.perform(put("/customers/" + customer.getId()).contentType(MediaType.APPLICATION_JSON_UTF8)
+        mockMvc.perform(put("/customers/" + createdCustomer.getId()).contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(jsonCustomer))
                 .andExpect(jsonPath("$.lastName", is(updatedCustomer.getLastName())))
                 .andDo(MockMvcResultHandlers.print())
