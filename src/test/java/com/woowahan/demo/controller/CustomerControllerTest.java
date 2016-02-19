@@ -1,21 +1,29 @@
 package com.woowahan.demo.controller;
 
+import static jdk.nashorn.internal.runtime.ScriptRuntime.DELETE;
 import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static
         org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import com.woowahan.SpringBootDemoApplication;
 import com.woowahan.demo.domain.Customer;
 import com.woowahan.demo.service.CustomerService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.Result;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -23,6 +31,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.JsonPathResultMatchers;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -71,7 +82,7 @@ public class CustomerControllerTest {
      */
     @Test
     public void test_목업기본동작체크() throws Exception {
-        mockMvc.perform(get("/customers/" ))
+        mockMvc.perform(get("/test" ))
                 .andExpect( status().isNotFound() );
     }
 
@@ -98,10 +109,46 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.lastName",is(customer.getLastName())))
                 .andExpect(jsonPath("$.lastName",is(any(String.class))))
                 .andDo(MockMvcResultHandlers.print());
-
     }
 
+    /**
+     * TODO : 고객등록
+     * TODO : 등록된 고객의 정보를 체크
+     */
+    @Test
+    public void test_고객_등록() throws Exception {
+        Customer customer = new Customer(null, "최", "인화");
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonCustomer = objectMapper.writeValueAsString(customer);
 
+        System.out.println(jsonCustomer);
+
+        mockMvc.perform(post("/customers").contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(jsonCustomer))
+                .andExpect(jsonPath("$.firstName", is(customer.getFirstName())))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
+    }
+
+    /**
+     * TODO : 고객 정보 수정(고객 등록 포함)
+     * TODO : 등록된 고객 정보와 수정된 정보 확인
+     */
+    @Test
+    public void test_고객_수정() throws Exception {
+        Customer customer = new Customer(null, "손", "현태");
+        Customer createdCustomer = customerService.create(customer);
+        Customer updatedCustomer = new Customer(null, "민", "경수");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonCustomer = objectMapper.writeValueAsString(updatedCustomer);
+
+        mockMvc.perform(put("/customers/" + customer.getId()).contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(jsonCustomer))
+                .andExpect(jsonPath("$.lastName", is(updatedCustomer.getLastName())))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
+    }
 
 }
