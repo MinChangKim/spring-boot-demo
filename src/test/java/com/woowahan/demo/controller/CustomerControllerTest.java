@@ -1,29 +1,12 @@
 package com.woowahan.demo.controller;
 
-import static jdk.nashorn.internal.runtime.ScriptRuntime.DELETE;
-import static org.hamcrest.Matchers.any;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static
-        org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import com.woowahan.SpringBootDemoApplication;
 import com.woowahan.demo.domain.Customer;
 import com.woowahan.demo.service.CustomerService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.Result;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -31,15 +14,23 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.JsonPathResultMatchers;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
 
-
+import static org.hamcrest.Matchers.any;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
  * Created by jhhan on 2016-02-12.
@@ -149,6 +140,27 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.lastName", is(updatedCustomer.getLastName())))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
+    }
+
+    /**
+     * TODO : 고객정보 삭제
+     */
+    @Test
+    public void test_고객_삭제() throws Exception {
+
+        //given
+        Customer customer = new Customer(null, "김", "민창");
+        Customer createCustomer = customerService.create(customer);
+
+        Long createId = createCustomer.getId();
+
+        //when
+         ResultActions resultActions = mockMvc.perform(delete("/customers/" + createId));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+                .andDo(MockMvcResultHandlers.print());
+                //andExpect(content().string("true"));
     }
 
 }
